@@ -1,0 +1,5 @@
+api/*
+Dockerfile
+go.mod
+main.go
+/openapi/*.md

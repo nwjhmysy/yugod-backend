@@ -1,0 +1,18 @@
+version: '3'
+services:
+  openapi-generator-cli:
+    image: openapitools/openapi-generator-cli:v7.2.0
+    command:
+      [
+        'generate',
+        '-i',
+        './tmp/src/openapi.v3.yaml',
+        '-o',
+        'tmp/dist',
+        '-g',
+        'go-gin-server',
+        '--additional-properties=packageName=openapi,withGoCodegenComment=true,apiPath=openapi,enumClassPrefix=true',
+      ]
+    volumes:
+      - ./gin-api:/tmp/src
+      - ./app:/tmp/dist
