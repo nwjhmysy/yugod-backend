@@ -19,7 +19,6 @@ paths:
                     content:
                         text/markdown:
                             schema:
-                                format: binary
                                 type: string
                     description: 请求成功
             operationId: GetMarkDownByKey

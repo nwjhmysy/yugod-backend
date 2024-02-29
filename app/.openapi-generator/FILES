@@ -1,4 +1,4 @@
-openapi/api_test_.go
+openapi/api_md.go
 openapi/model_common_response.go
 openapi/model_response_status.go
 openapi/routers.go

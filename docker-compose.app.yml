@@ -7,4 +7,4 @@ services:
     container_name: yugod-backend
     restart: always
     ports:
-      - "8849:8849"
+      - "8080:8080"

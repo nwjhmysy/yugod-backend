@@ -29,7 +29,11 @@ type Route struct {
 
 // NewRouter returns a new router.
 func NewRouter(handleFunctions ApiHandleFunctions) *gin.Engine {
-	router := gin.Default()
+	return NewRouterWithGinEngine(gin.Default(), handleFunctions)
+}
+
+// NewRouter add routes to existing gin engine.
+func NewRouterWithGinEngine(router *gin.Engine, handleFunctions ApiHandleFunctions) *gin.Engine {
 	for _, route := range getRoutes(handleFunctions) {
 		if route.HandlerFunc == nil {
 			route.HandlerFunc = DefaultHandleFunc
@@ -58,17 +62,17 @@ func DefaultHandleFunc(c *gin.Context) {
 
 type ApiHandleFunctions struct {
 
-	// Routes for the TestAPI part of the API
-	TestAPI TestAPI
+	// Routes for the MdAPI part of the API
+	MdAPI MdAPI
 }
 
 func getRoutes(handleFunctions ApiHandleFunctions) []Route {
 	return []Route{ 
 		{
-			"SayHello",
+			"GetMarkDownByKey",
 			http.MethodGet,
-			"/api/test/hello",
-			handleFunctions.TestAPI.SayHello,
+			"/api/md",
+			handleFunctions.MdAPI.GetMarkDownByKey,
 		},
 	}
 }

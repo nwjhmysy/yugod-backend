@@ -9,11 +9,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type TestAPI struct {
-	openapi.TestAPI
+type mdAPI struct {
+	openapi.MdAPI
 }
 
-func (api *TestAPI) GetMarkDownByKey(ctx *gin.Context) {
+func (md *mdAPI) GetMarkDownByKey(ctx *gin.Context) {
 	resp := response.Gin{Ctx: ctx}
 
 	// 打开本地的 Markdown 文件
@@ -33,4 +33,4 @@ func (api *TestAPI) GetMarkDownByKey(ctx *gin.Context) {
 	}
 }
 
-var TestApi TestAPI
+var MdAPI = mdAPI{}

@@ -13,11 +13,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type TestAPI struct {
+type MdAPI struct {
 }
 
-// Get /api/test/hello
-func (api *TestAPI) SayHello(c *gin.Context) {
+// Get /api/md
+func (api *MdAPI) GetMarkDownByKey(c *gin.Context) {
 	// Your handler implementation
 	c.JSON(200, gin.H{"status": "OK"})
 }
