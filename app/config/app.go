@@ -17,6 +17,7 @@ type AppConfig struct {
 	MaximumUploadFileSize int64  `yaml:"MaximumUploadFileSize"`
 	FrontendURL           string `yaml:"FrontendURL"`
 	BackendURL            string `yaml:"BackendURL"`
+	DownloadCode          uint   `yaml:"DownloadCode"`
 }
 
 func (app *AppConfig) setAppMode() {
@@ -48,6 +49,10 @@ func init() {
 			FrontendURL: os.Getenv("APP_FRONTEND_URL"),
 			BackendURL:  os.Getenv("APP_BACKEND_URL"),
 		}
+
+		downloadCode, _ := strconv.Atoi(os.Getenv("APP_DOWNLOAD_CODE"))
+		setting.DownloadCode = uint(downloadCode)
+
 		if err := setting.overwritePortIfNeeded("APP_PORT"); err != nil {
 			setting.Port = 8080
 		}

@@ -16,8 +16,14 @@ import (
 type MdAPI struct {
 }
 
+// Get /api/md/download
+func (api *MdAPI) DownloadMDByCode(c *gin.Context) {
+	// Your handler implementation
+	c.JSON(200, gin.H{"status": "OK"})
+}
+
 // Get /api/md
-func (api *MdAPI) GetMarkDownByKey(c *gin.Context) {
+func (api *MdAPI) GetMarkDownByPath(c *gin.Context) {
 	// Your handler implementation
 	c.JSON(200, gin.H{"status": "OK"})
 }

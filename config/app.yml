@@ -3,3 +3,4 @@ Debug: true
 ReadTimeout: 120
 WriteTimeout: 120
 MaximumUploadFileSize: 20971520
+DownloadCode: 1234567

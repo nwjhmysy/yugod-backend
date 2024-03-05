@@ -11,5 +11,6 @@ func SetupApiRouter(engine *gin.Engine) {
 
 	// markdown 相关
 	mdApiRouter := apiRouter.Group("/md")
-	mdApiRouter.GET("", controller.MdAPI.GetMarkDownByKey)
+	mdApiRouter.GET("", controller.MdAPI.GetMarkDownByPath)
+	mdApiRouter.GET("/download", controller.MdAPI.DownloadMDByCode)
 }

@@ -3,7 +3,7 @@ version: "3.1"
 services:
   backend:
     platform: linux/amd64
-    image: yinsiyu/yugod-backend:v1.0
+    image: yinsiyu/yugod-backend:v1.1
     container_name: yugod-backend
     restart: always
     ports:

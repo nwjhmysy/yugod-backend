@@ -69,10 +69,16 @@ type ApiHandleFunctions struct {
 func getRoutes(handleFunctions ApiHandleFunctions) []Route {
 	return []Route{ 
 		{
-			"GetMarkDownByKey",
+			"DownloadMDByCode",
+			http.MethodGet,
+			"/api/md/download",
+			handleFunctions.MdAPI.DownloadMDByCode,
+		},
+		{
+			"GetMarkDownByPath",
 			http.MethodGet,
 			"/api/md",
-			handleFunctions.MdAPI.GetMarkDownByKey,
+			handleFunctions.MdAPI.GetMarkDownByPath,
 		},
 	}
 }

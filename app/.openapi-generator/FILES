@@ -1,4 +1,5 @@
 openapi/api_md.go
 openapi/model_common_response.go
+openapi/model_get_mdby_path_response.go
 openapi/model_response_status.go
 openapi/routers.go

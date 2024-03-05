@@ -21,6 +21,7 @@ ENV APP_PORT=8080
 ENV APP_DEBUG="false"
 ENV APP_FRONTEND_URL="http://www.example.com"
 ENV APP_BACKEND_URL="http://api.example.com"
+ENV APP_DOWNLOAD_CODE=1234567
 
 # 暴露端口
 EXPOSE 8080

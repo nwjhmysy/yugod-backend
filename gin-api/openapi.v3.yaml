@@ -14,14 +14,50 @@ paths:
         get:
             tags:
                 - md
+            parameters:
+                -
+                    name: md_path
+                    description: markdown文件路径
+                    schema:
+                        type: string
+                    in: query
+                    required: true
+            responses:
+                '200':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetMDByPathResponse'
+                    description: 获取成功！
+            operationId: GetMarkDownByPath
+    /md/download:
+        get:
+            tags:
+                - md
+            parameters:
+                -
+                    name: md_path
+                    description: 文件路径
+                    schema:
+                        type: string
+                    in: query
+                    required: true
+                -
+                    name: download_code
+                    description: 下载码
+                    schema:
+                        type: integer
+                    in: query
+                    required: true
             responses:
                 '200':
                     content:
                         text/markdown:
                             schema:
+                                format: binary
                                 type: string
-                    description: 请求成功
-            operationId: GetMarkDownByKey
+                    description: 下载成功！
+            operationId: DownloadMDByCode
 components:
     schemas:
         CommonResponse:
@@ -44,6 +80,23 @@ components:
                 - fail
                 - error
             type: string
+        GetMDByPathResponse:
+            description: ''
+            required:
+                - message
+                - status
+                - data
+            type: object
+            properties:
+                message:
+                    description: ''
+                    type: string
+                status:
+                    $ref: '#/components/schemas/ResponseStatus'
+                    description: ''
+                data:
+                    description: ''
+                    type: string
 tags:
     -
         name: md
