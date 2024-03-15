@@ -543,3 +543,222 @@ image-push:
 	docker push yinsiyu/gin-project
 ```
 
+### 14.配置并使用`mysql`驱动
+
+#### 安装所需的库
+
+安装`gorm`
+
+```
+go get -u gorm.io/gorm
+```
+
+安装`mysql`驱动
+
+```
+go get -u gorm.io/driver/mysql
+```
+
+#### 配置连接
+
+- 创建`db.yml`
+
+  在`/config`目录下创建`db.yml`文件（**有小坑**）
+
+  ```yaml
+  Username: root
+  Password: ysy123
+  Connection: tcp(www.yugod.top:3306)
+  DatabaseName: yugod_db
+  TablePrefix: ysy_
+  ```
+
+- 初始化配置信息结构体
+
+  在`/app/config`目录下创建`db.go`
+
+  注意：没有使用环境变量，可以配置一下。
+
+  ```go
+  type DBConfig struct {
+  	Username     string `yaml:"Username"`
+  	Password     string `yaml:"Password"`
+  	Connection   string `yaml:"Connection"`
+  	DatabaseName string `yaml:"DatabaseName"`
+  }
+  
+  var DB DBConfig
+  
+  func (d DBConfig) GetDSN() string {
+  	return fmt.Sprintf("%s:%s@%s/%s?charset=utf8mb4&parseTime=True", d.Username, d.Password, d.Connection, d.DatabaseName)
+  }
+  
+  func init() {
+  	// Read config from YAML
+  	var settings DBConfig
+  
+  	config, err := os.ReadFile("config/db.yml")
+  
+  	if err != nil {
+  		log.Fatal("DB config not set.")
+  	}
+  	yamlErr := yaml.Unmarshal(config, &settings)
+  	if yamlErr != nil {
+  		log.Fatal("DB config read error.")
+  	}
+  
+  	DB = settings
+  }
+  
+  ```
+
+- 连接数据库的方法
+
+  在路径`app/db`下创建`db.go`
+
+  通过上面的配置信息和方法在`InitDB`方法中尝试连接
+
+  创建`app/dao/base.go`
+
+  ```go
+  var (
+  	// DB reference to database
+  	DB *gorm.DB
+  )
+  ```
+
+  `app/db/db.go`
+
+  ```go
+  var DB *gorm.DB
+  
+  func InitDB() {
+  	gormConfig := &gorm.Config{
+  		// 表名配置：添加前缀
+  		NamingStrategy: schema.NamingStrategy{
+  			TablePrefix:   "ysy_",
+  			SingularTable: true,
+  		},
+  	}
+  	// mysql Debug
+  	if config.App.Debug {
+  		gormLogger := logger.New(
+  			log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+  			logger.Config{
+  				SlowThreshold: time.Second, // Slow SQL threshold
+  				LogLevel:      logger.Info, // Log level
+  				Colorful:      false,       // Disable color
+  			},
+  		)
+  		gormConfig.Logger = gormLogger
+  	}
+  
+  	db, err := gorm.Open(mysql.Open(config.DB.GetDSN()), gormConfig)
+  	if err != nil {
+  		log.Fatalf("Got error when connect database, the error is '%v'", err)
+  	}
+  
+  	// 传入dao层
+  	dao.DB = db
+  	err = db.AutoMigrate(&model.ClickVolume{})
+  
+  	if err != nil {
+  		log.Fatalf("Got error when migrate database, the error is '%v'", err)
+  	}
+  }
+  ```
+
+- 启动连接
+
+  创建`app/boot/db.go`
+
+  ```go
+  // InitDB 创建数据表
+  func InitDB() {
+  	db.InitDB()
+  }
+  ```
+
+  在`main.go`中启动连接
+
+  ```go
+  boot.InitDB()
+  ```
+
+#### 定义模型
+
+在使用 GORM 进行数据库操作时，通常需要定义模型（Model）来表示数据库中的表结构。当你修改了模型的定义，例如添加了新的字段或者修改了字段的类型，你需要手动执行相应的数据库迁移操作来使数据库结构与模型定义保持一致。
+
+`AutoMigrate`方法
+
+`AutoMigrate` 方法的作用就是自动检测模型的变化，并将数据库结构更新为最新定义。它会创建缺失的表、添加缺失的字段，或者修改现有字段的类型等。
+
+注意：
+
+`AutoMigrate` 方法一般不会直接导致已有数据的丢失，但它会修改数据库表的结构，可能会导致数据的丢失或不完整，具体取决于你的模型定义以及数据库中已有的数据。
+
+在执行 `AutoMigrate` 方法时，GORM 会尝试按照你的模型定义来更新数据库表的结构。它会添加缺失的表、添加缺失的字段，或者修改字段的类型等。如果你的模型定义与数据库中的表结构不一致，那么 `AutoMigrate` 将会尝试使它们保持一致。
+
+但是，如果模型定义的变化导致了数据丢失或不完整的情况，例如你删除了一个字段，那么相关的数据可能会丢失。同样，如果你修改了字段的类型，可能会导致数据丢失或截断。
+
+在`/model`目录下创建模型
+
+例如：
+
+app/model/click-volume.go
+
+```go
+type ClickVolume struct {
+	gorm.Model
+	Name  string `gorm:"not null;type:varchar(255);comment:统计名称"`
+	Count uint   `gorm:"not null;type:bigint;comment:点击次数"`
+}
+```
+
+用`AutoMigrate`定义模型
+
+```go
+err = db.AutoMigrate(&model.ClickVolume{})
+if err != nil {
+  	// 迁移错误
+		log.Fatalf("Got error when migrate database, the error is '%v'", err)
+	}
+```
+
+用于定义模型的结构图最好继承`gorm.Model`(如上)
+
+继承后的表会增加字段：
+
+```go
+type Model struct {
+  	// 主键
+    ID        uint `gorm:"primarykey"`
+  	// 创建时间
+    CreatedAt time.Time
+  	// 更新时间
+    UpdatedAt time.Time
+  	// 删除时间
+    DeletedAt DeletedAt `gorm:"index"`
+}
+```
+
+如果通过gorm框架删除数据，在数据库中数据不会消失，只是改变`DeletedAt`字段的值
+
+防止数据被误删
+
+#### 补坑
+
+连接数据库时
+
+通常连接地址应该包含协议
+
+www.yugod.top:3306❌
+
+tcp（www.yugod.top:3306）✅
+
+最后拼接的`dsn`类似于
+
+```
+dsn := "user:password@tcp(xxx.xxx.xxx.xxx:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local"
+```
+

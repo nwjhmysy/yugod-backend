@@ -58,6 +58,37 @@ paths:
                                 type: string
                     description: 下载成功！
             operationId: DownloadMDByCode
+    /info:
+        get:
+            tags:
+                - info
+            responses:
+                '200':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetClickVolumeResponse'
+                    description: 获取网站点击量
+            operationId: GetClickVolume
+            description: 获取网站点击量
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SetClickVolumeByTagParam'
+                required: true
+            tags:
+                - info
+            responses:
+                '200':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CommonResponse'
+                    description: 浏览量+1！
+            operationId: SetClickVolumeByTag
+            description: 增加点击量
 components:
     schemas:
         CommonResponse:
@@ -97,7 +128,49 @@ components:
                 data:
                     description: ''
                     type: string
+        GetClickVolumeData:
+            description: ''
+            required:
+                - web
+                - note
+            type: object
+            properties:
+                web:
+                    description: 网站总点击量
+                    type: integer
+                note:
+                    description: 笔记点击量
+                    type: integer
+        GetClickVolumeResponse:
+            description: ''
+            required:
+                - message
+                - status
+                - data
+            type: object
+            properties:
+                message:
+                    description: ''
+                    type: string
+                status:
+                    $ref: '#/components/schemas/ResponseStatus'
+                    description: ''
+                data:
+                    $ref: '#/components/schemas/GetClickVolumeData'
+                    description: ''
+        SetClickVolumeByTagParam:
+            description: ''
+            required:
+                - tag
+            type: object
+            properties:
+                tag:
+                    description: ''
+                    type: string
 tags:
     -
         name: md
         description: markdown文件相关
+    -
+        name: info
+        description: 获取网站基本信息

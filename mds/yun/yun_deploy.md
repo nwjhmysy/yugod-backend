@@ -255,3 +255,66 @@ sudo docker run --name yugod-backend-v1.1 -d -p 8080:8080 --restart=always yinsi
 sudo docker run --name yugod-frontend-v1.1 -d -p 80:80 -p 443:443 --restart=always yinsiyu/yugod-frontend:v1.1
 ```
 
+### 10.创建并启动`mysql`
+
+将`docker-compose.db.yml`上传到云服务器
+
+```yaml
+version: '3.7'
+
+services:
+  mysql:
+    image: mysql:8.0
+    restart: always
+    container_name: mysql-yugod
+    environment:
+      MYSQL_ROOT_PASSWORD: ysy123
+      MYSQL_DATABASE: yugod_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
+
+```
+
+使用`docker-compose`构建mysql的容器并启动（有坑）
+
+在控制台开启`3306`端口
+
+| **应用类型** | **来源**  | **协议** | **端口** | **策略** | **备注**         |
+| ------------ | --------- | -------- | -------- | -------- | ---------------- |
+| MySQL (3306) | 0.0.0.0/0 | TCP      | 3306     | 允许     | MySQL服务 (3306) |
+
+坑：
+
+云服务器安装了`docker-compose`
+
+但是权限不足
+
+报错：
+
+Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock
+
+原因：
+
+```
+docker进程使用 Unix Socket 而不是 TCP 端口。而默认情况下，Unix socket 属于 root 用户，因此需要 root权限 才能访问。
+```
+
+解决：
+
+查看 /var/run/docker.sock所在用户组，将用户重新加入docker组中
+
+```
+sudo groupadd docker #添加docker用户组
+
+sudo gpasswd -a $XXX docker #检测当前用户是否已经在docker用户组中，其中XXX为用户名，例如我的，liangll
+
+sudo gpasswd -a $USER docker #将当前用户添加至docker用户组
+
+newgrp docker #更新docker用户组
+```
+

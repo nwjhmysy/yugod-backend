@@ -62,12 +62,26 @@ func DefaultHandleFunc(c *gin.Context) {
 
 type ApiHandleFunctions struct {
 
+	// Routes for the InfoAPI part of the API
+	InfoAPI InfoAPI
 	// Routes for the MdAPI part of the API
 	MdAPI MdAPI
 }
 
 func getRoutes(handleFunctions ApiHandleFunctions) []Route {
 	return []Route{ 
+		{
+			"GetClickVolume",
+			http.MethodGet,
+			"/api/info",
+			handleFunctions.InfoAPI.GetClickVolume,
+		},
+		{
+			"SetClickVolumeByTag",
+			http.MethodPost,
+			"/api/info",
+			handleFunctions.InfoAPI.SetClickVolumeByTag,
+		},
 		{
 			"DownloadMDByCode",
 			http.MethodGet,

@@ -23,6 +23,13 @@ ENV APP_FRONTEND_URL="http://www.example.com"
 ENV APP_BACKEND_URL="http://api.example.com"
 ENV APP_DOWNLOAD_CODE=1234567
 
+# db设置
+ENV DB_USE_ENV="true"
+ENV DB_USERNAME="root"
+ENV DB_PASSWORD="ysy123"
+ENV DB_CONNECTION="tcp(www.yugod.top:3306)"
+ENV DB_NAME="yugod_db"
+
 # 暴露端口
 EXPOSE 8080
 

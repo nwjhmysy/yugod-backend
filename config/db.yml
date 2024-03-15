@@ -1,0 +1,5 @@
+Username: root
+Password: ysy123
+Connection: tcp(www.yugod.top:3306)
+DatabaseName: yugod_db
+TablePrefix: ysy_

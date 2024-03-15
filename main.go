@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-
+	boot.InitDB()
 	boot.GinServer()
 
 	WaitExit()
