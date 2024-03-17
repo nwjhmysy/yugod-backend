@@ -11,9 +11,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type mdAPI struct {
-	openapi.MdAPI
+type iMdAPI interface {
+	GetMarkDownByPath(ctx *gin.Context)
+	DownloadMDByCode(ctx *gin.Context)
 }
+type mdAPI struct{}
+
+var MdAPI iMdAPI = mdAPI{}
 
 type MdAPIParam struct {
 	MdPath string `form:"md_path"`
@@ -23,15 +27,13 @@ type DownloadMdAPIParam struct {
 	DownloadCode uint   `form:"download_code"`
 }
 
-func (md *mdAPI) GetMarkDownByPath(ctx *gin.Context) {
+func (mdAPI) GetMarkDownByPath(ctx *gin.Context) {
 	resp := response.Gin{Ctx: ctx}
 	param := MdAPIParam{}
 	// 获取 md 文件的路径参数
 	if err := ctx.ShouldBindQuery(&param); err != nil {
-		if err != nil {
-			resp.ClientError("参数获取失败！")
-			return
-		}
+		resp.ClientError("参数获取失败！")
+		return
 	}
 
 	// 打开本地的 Markdown 文件
@@ -59,7 +61,7 @@ func (md *mdAPI) GetMarkDownByPath(ctx *gin.Context) {
 	resp.Success(response)
 }
 
-func (md *mdAPI) DownloadMDByCode(ctx *gin.Context) {
+func (mdAPI) DownloadMDByCode(ctx *gin.Context) {
 	resp := response.Gin{Ctx: ctx}
 	param := DownloadMdAPIParam{}
 
@@ -92,5 +94,3 @@ func (md *mdAPI) DownloadMDByCode(ctx *gin.Context) {
 	ctx.Header("Pragma", "public")
 	ctx.File(filePath)
 }
-
-var MdAPI = mdAPI{}
