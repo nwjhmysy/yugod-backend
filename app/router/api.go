@@ -13,4 +13,9 @@ func SetupApiRouter(engine *gin.Engine) {
 	mdApiRouter := apiRouter.Group("/md")
 	mdApiRouter.GET("", controller.MdAPI.GetMarkDownByPath)
 	mdApiRouter.GET("/download", controller.MdAPI.DownloadMDByCode)
+
+	// info 相关
+	infoApiRouter := apiRouter.Group("info")
+	infoApiRouter.GET("", controller.InfoAPI.GetClickVolume)
+	infoApiRouter.POST("", controller.InfoAPI.SetClickVolumeByTag)
 }
