@@ -44,7 +44,10 @@ func InitDB() {
 
 	// 传入dao层
 	dao.DB = db
-	err = db.AutoMigrate(&model.ClickVolume{})
+	err = db.AutoMigrate(
+		&model.ClickVolume{},
+		&model.User{},
+	)
 
 	if err != nil {
 		log.Fatalf("Got error when migrate database, the error is '%v'", err)

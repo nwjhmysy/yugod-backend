@@ -705,7 +705,7 @@ go get -u gorm.io/driver/mysql
 
 例如：
 
-app/model/click-volume.go
+app/model/db-click-volume.go
 
 ```go
 type ClickVolume struct {
