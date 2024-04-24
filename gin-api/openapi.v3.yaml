@@ -89,6 +89,41 @@ paths:
                     description: 浏览量+1！
             operationId: SetClickVolumeByTag
             description: 增加点击量
+    /user/create:
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateUserParam'
+                required: true
+            tags:
+                - User
+            responses:
+                '200':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CommonResponse'
+                    description: 创建成功！
+            operationId: CreateUser
+            description: 创建真实用户
+    /user/info:
+        get:
+            tags:
+                - User
+            responses:
+                '200':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetUserInfoResponse'
+                    description: 获取当前user信息
+            security:
+                -
+                    token: []
+            operationId: GetUserInfo
+            description: 获取用户信息成功！
 components:
     schemas:
         CommonResponse:
@@ -167,6 +202,81 @@ components:
                 tag:
                     description: ''
                     type: string
+        CreateUserParam:
+            description: 创建真实的用户所需的参数
+            required:
+                - userName
+                - name
+                - password
+                - auth
+            type: object
+            properties:
+                userName:
+                    description: 账号
+                    type: string
+                name:
+                    description: 昵称
+                    type: string
+                password:
+                    description: 密码
+                    type: string
+                auth:
+                    description: '身份：1,游客;2,用户;'
+                    type: integer
+                email:
+                    description: 邮箱
+                    type: string
+                age:
+                    description: 年龄
+                    type: integer
+        GetUserInfoResponse:
+            description: ''
+            required:
+                - message
+                - status
+                - data
+            type: object
+            properties:
+                message:
+                    description: ''
+                    type: string
+                status:
+                    $ref: '#/components/schemas/ResponseStatus'
+                    description: ''
+                data:
+                    $ref: '#/components/schemas/GetUserInfoData'
+                    description: ''
+        GetUserInfoData:
+            description: ''
+            required:
+                - userId
+                - user_name
+                - auth
+                - name
+            type: object
+            properties:
+                userId:
+                    description: ''
+                    type: integer
+                user_name:
+                    description: ''
+                    type: string
+                email:
+                    description: ''
+                    type: string
+                auth:
+                    description: ''
+                    type: integer
+                age:
+                    description: ''
+                    type: integer
+                name:
+                    description: 昵称
+                    type: string
+    securitySchemes:
+        token:
+            scheme: bearer
+            type: http
 tags:
     -
         name: md
@@ -174,3 +284,6 @@ tags:
     -
         name: info
         description: 获取网站基本信息
+    -
+        name: User
+        description: 用户

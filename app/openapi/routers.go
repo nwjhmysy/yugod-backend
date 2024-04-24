@@ -66,6 +66,8 @@ type ApiHandleFunctions struct {
 	InfoAPI InfoAPI
 	// Routes for the MdAPI part of the API
 	MdAPI MdAPI
+	// Routes for the UserAPI part of the API
+	UserAPI UserAPI
 }
 
 func getRoutes(handleFunctions ApiHandleFunctions) []Route {
@@ -93,6 +95,12 @@ func getRoutes(handleFunctions ApiHandleFunctions) []Route {
 			http.MethodGet,
 			"/api/md",
 			handleFunctions.MdAPI.GetMarkDownByPath,
+		},
+		{
+			"CreateUser",
+			http.MethodPost,
+			"/api/user/create",
+			handleFunctions.UserAPI.CreateUser,
 		},
 	}
 }

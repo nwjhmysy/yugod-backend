@@ -3,6 +3,7 @@ package middleware
 import (
 	"log"
 	"time"
+	"yugod-backend/app/dao"
 	"yugod-backend/app/lib/response"
 	"yugod-backend/app/model"
 	"yugod-backend/app/openapi"
@@ -31,18 +32,14 @@ func initAdminAuth() {
 			if err := c.ShouldBind(&loginVals); err != nil {
 				return "", jwt.ErrMissingLoginValues
 			}
-			email := loginVals.Email
-			password := loginVals.Password
+			claims, err := dao.UserDao.LoginByUserName(loginVals)
 
 			// 验证用户，检查用户名和密码是否正确
-			if email == "634365439@qq.com" && password == "123456" {
-				return &model.User{
-					Email: "634365439@qq.com",
-					Name:  "test",
-				}, nil
+			if err != nil {
+				return nil, jwt.ErrFailedAuthentication
 			}
 
-			return nil, jwt.ErrFailedAuthentication
+			return claims, nil
 		},
 		// 权限验证（可选）
 		// 根据 token 验证后的数据，自定义权限的验证
@@ -57,10 +54,10 @@ func initAdminAuth() {
 		// 将信息添加到 JWT 令牌中
 		// 将参数中需要的数据添加到 JWT 令牌中，会返回一个 map[string]interface{} 类型的字典
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
-			if v, ok := data.(*model.User); ok {
+			if v, ok := data.(*model.LoginClaims); ok {
 				return jwt.MapClaims{
-					"email": v.Email,
-					"token": v.Password,
+					"userId": v.Id,
+					"auth":   v.Auth,
 				}
 			}
 			return jwt.MapClaims{}

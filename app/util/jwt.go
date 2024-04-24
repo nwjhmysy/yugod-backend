@@ -5,12 +5,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetUserEmailFromClaims(c *gin.Context) string {
+// 获取userId
+func GetUserId(c *gin.Context) uint {
 	claims := jwt.ExtractClaims(c)
-	email, ok := claims["email"]
+	userId, ok := claims["userId"]
 	if ok {
-		return email.(string)
+		return uint(userId.(float64))
 	}
 
-	return "no email"
+	return 0
+}
+
+// 获取auth
+func GetAuth(c *gin.Context) uint {
+	claims := jwt.ExtractClaims(c)
+	auth, ok := claims["auth"]
+	if ok {
+		return uint(auth.(float64))
+	}
+
+	return 0
 }
