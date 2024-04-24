@@ -102,5 +102,11 @@ func getRoutes(handleFunctions ApiHandleFunctions) []Route {
 			"/api/user/create",
 			handleFunctions.UserAPI.CreateUser,
 		},
+		{
+			"GetUserInfo",
+			http.MethodGet,
+			"/api/user/info",
+			handleFunctions.UserAPI.GetUserInfo,
+		},
 	}
 }

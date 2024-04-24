@@ -33,4 +33,6 @@ func SetupApiRouter(engine *gin.Engine) {
 	// user
 	userApiRouter := apiRouter.Group("user")
 	userApiRouter.POST("/create", controller.UserApi.CreateUser)
+	userApiRouter.Use(middleware.AuthMiddleware.MiddlewareFunc())
+	userApiRouter.GET("/info", controller.UserApi.GetUserInfo)
 }

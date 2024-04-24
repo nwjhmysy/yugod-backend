@@ -6,6 +6,8 @@ openapi/model_create_user_param.go
 openapi/model_get_click_volume_data.go
 openapi/model_get_click_volume_response.go
 openapi/model_get_mdby_path_response.go
+openapi/model_get_user_info_data.go
+openapi/model_get_user_info_response.go
 openapi/model_response_status.go
 openapi/model_set_click_volume_by_tag_param.go
 openapi/routers.go

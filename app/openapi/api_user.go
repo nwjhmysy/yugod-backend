@@ -22,3 +22,9 @@ func (api *UserAPI) CreateUser(c *gin.Context) {
 	c.JSON(200, gin.H{"status": "OK"})
 }
 
+// Get /api/user/info
+func (api *UserAPI) GetUserInfo(c *gin.Context) {
+	// Your handler implementation
+	c.JSON(200, gin.H{"status": "OK"})
+}
+

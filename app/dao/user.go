@@ -9,6 +9,7 @@ import (
 type iUserDao interface {
 	CreateUser(param *openapi.CreateUserParam) error
 	LoginByUserName(loginVals model.LoginParam) (*model.LoginClaims, error)
+	GetUserInfo(userId uint) (*openapi.GetUserInfoData, error)
 }
 type userDao struct{}
 
@@ -48,4 +49,23 @@ func (userDao) LoginByUserName(loginVals model.LoginParam) (*model.LoginClaims, 
 	}
 
 	return nil, err
+}
+
+func (userDao) GetUserInfo(userId uint) (*openapi.GetUserInfoData, error) {
+	user := &model.User{}
+	err := DB.Model(user).First(user, "id = ?", userId).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	userInfo := &openapi.GetUserInfoData{
+		UserId:   int32(userId),
+		UserName: user.UserName,
+		Auth:     int32(user.Auth),
+		Name:     user.Name,
+		Email:    user.Email,
+		Age:      int32(user.Age),
+	}
+	return userInfo, nil
 }
