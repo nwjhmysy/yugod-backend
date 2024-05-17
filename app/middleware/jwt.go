@@ -19,8 +19,8 @@ func initAdminAuth() {
 	authMiddleware, err := jwt.New(&jwt.GinJWTMiddleware{
 		Realm:         "test zone",
 		Key:           []byte("secret key"),
-		Timeout:       time.Hour,
-		MaxRefresh:    time.Hour,
+		Timeout:       time.Hour * 24,
+		MaxRefresh:    time.Hour * 24,
 		IdentityKey:   "id",
 		TokenLookup:   "header: Authorization, query: token, cookie: jwt",
 		TokenHeadName: "Bearer",
@@ -41,14 +41,18 @@ func initAdminAuth() {
 
 			return claims, nil
 		},
+		LoginResponse: func(c *gin.Context, code int, message string, time time.Time) {
+			resp := response.Gin{Ctx: c}
+			response := openapi.CommonResponse{
+				Message: message,
+				Status:  openapi.RESPONSESTATUS_SUCCESS,
+			}
+			resp.Success(response)
+		},
 		// 权限验证（可选）
 		// 根据 token 验证后的数据，自定义权限的验证
 		Authorizator: func(data interface{}, c *gin.Context) bool {
 			// 授权逻辑，可以根据需求自定义
-			if v, ok := data.(*model.User); ok && v.Name == "admin" {
-				return true
-			}
-
 			return true
 		},
 		// 将信息添加到 JWT 令牌中
@@ -64,7 +68,8 @@ func initAdminAuth() {
 		},
 		// 认证失败
 		Unauthorized: func(c *gin.Context, code int, message string) {
-			c.JSON(code, gin.H{"code": code, "message": message})
+			resp := response.Gin{Ctx: c}
+			resp.Unauthorized(message)
 		},
 		LogoutResponse: func(c *gin.Context, code int) {
 			resp := response.Gin{Ctx: c}

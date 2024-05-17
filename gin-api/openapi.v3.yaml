@@ -124,6 +124,24 @@ paths:
                     token: []
             operationId: GetUserInfo
             description: 获取用户信息成功！
+    /login:
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/LoginParam'
+                required: true
+            tags:
+                - login
+            responses:
+                '200':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CommonResponse'
+                    description: 登录成功！
+            operationId: LoginByUserName
 components:
     schemas:
         CommonResponse:
@@ -273,6 +291,19 @@ components:
                 name:
                     description: 昵称
                     type: string
+        LoginParam:
+            description: ''
+            required:
+                - user_name
+                - password
+            type: object
+            properties:
+                user_name:
+                    description: ''
+                    type: string
+                password:
+                    description: ''
+                    type: string
     securitySchemes:
         token:
             scheme: bearer
@@ -287,3 +318,6 @@ tags:
     -
         name: User
         description: 用户
+    -
+        name: login
+        description: 登录
